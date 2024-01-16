@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="style.css">
+<style>
+textarea {
+    background-color: white;
+}
+
+input {
+    background-color: white;
+}
+</style>
+
+<script>
+function paste() {
+    fetch("http://scrat:6600/new", {
+        method: "POST",
+        mode: "cors",
+        body: JSON.stringify({
+            id: document.getElementById("id_text").value,
+            text: document.getElementById("paste_text").value,
+        }),
+        headers: {
+            "Content-type": "application/json; charset=UTF-8",
+            "Access-Control-Allow-Origin": "*",
+        }
+    });
+
+    document.getElementById("output").value = "./" + document.getElementById("id_text");
+}
+</script>
+</head>
+
+<body>
+    <h1>kyle's pastebin</h1>
+    Title:
+    <textarea id="id_text" name="text" rows="1" cols="24"> </textarea>
+    <br>
+    <textarea id="paste_text" name="text" rows="24" cols="80" wrap="soft"> </textarea>
+    <br>
+    <input type="submit" value="Paste" onclick="paste()">
+
+    <p id="output"></p>
+</body>
+</html>
