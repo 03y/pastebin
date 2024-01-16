@@ -5,11 +5,11 @@ import (
     "fmt"
     "net/http"
     "github.com/gin-gonic/gin"
+    cors "github.com/rs/cors/wrapper/gin"
 )
 
 const VERSION           string = "0.0.1-Alpha"
 const PASTE_DESTINATION string = "/var/www/html/paste/"
-const LISTEN            string = "localhost:6600"
 
 type paste struct {
     ID      string  `json:"id"`
@@ -23,7 +23,6 @@ func pasteIt(c *gin.Context) {
         return
     }
 
-    // Log
     fmt.Printf("New paste (ID: %s)\n", newPaste.ID)
 
     data := []byte(newPaste.Text)
@@ -38,11 +37,19 @@ func pasteIt(c *gin.Context) {
 }
 
 func main() {
-    fmt.Println("Paste backend " + VERSION) 
+    fmt.Printf("Paste backend %s\n", VERSION) 
+   
+    if len(os.Args) < 2 {
+        fmt.Println("Usage: ./paste_backend <URL>:<PORT>")
+        return
+    }
+
+    var listen string = os.Args[1]
 
     router := gin.Default()
+    router.Use(cors.AllowAll())
     router.POST("/new", pasteIt)
-    fmt.Printf("\nListening on %s...\n", LISTEN)
-    router.Run(LISTEN)
+    fmt.Printf("\nListening on %s...\n", listen)
+    router.Run(listen)
 }
 
